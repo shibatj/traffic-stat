@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สถิติการใช้รถและถนนในประเทศไทย (2558-2568)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts: Sarabun (ฟอนต์มาตรฐานสำหรับภาษาไทย) -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f3f4f6;
+            /* Cool Gray 100 */
+        }
+
+        /* Custom Palette - Energetic Blue & Orange */
+        .text-brand-primary {
+            color: #1E3A8A;
+        }
+
+        /* Deep Blue */
+        .bg-brand-primary {
+            background-color: #1E3A8A;
+        }
+
+        .text-brand-accent {
+            color: #F97316;
+        }
+
+        /* Vibrant Orange */
+        .bg-brand-accent {
+            background-color: #F97316;
+        }
+
+        .bg-brand-light {
+            background-color: #EFF6FF;
+        }
+
+        /* Blue 50 */
+
+        /* Chart Container Styling - MANDATORY */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            /* Constraints managed by parent grid/flex */
+            height: 350px;
+            /* Base height */
+            max-height: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        /* Hide scrollbar for clean look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+
+<body class="text-gray-800">
+
+    <!-- Navigation / Header -->
+    <nav class="bg-brand-primary shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="text-3xl text-white font-bold">🇹🇭</div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold text-white">สถิติถนนและรถยนต์ไทย</h1>
+                    <p class="text-xs text-blue-200">1 ทศวรรษแห่งการเปลี่ยนแปลง (2558 - 2568)</p>
+                </div>
+            </div>
+            <div class="hidden md:block text-white text-sm opacity-80">
+                แหล่งข้อมูล: กรมการขนส่งทางบก, กทพ., กระทรวงคมนาคม
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="container mx-auto px-4 py-8 space-y-12 max-w-7xl">
+
+        <!-- Hero Section -->
+        <section class="bg-white rounded-2xl shadow-md p-8 text-center border-t-4 border-brand-accent">
+            <h2 class="text-3xl md:text-4xl font-bold text-brand-primary mb-4">วิวัฒนาการบนท้องถนนไทย</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                ในช่วง 10 ปีที่ผ่านมา ภูมิทัศน์การคมนาคมของไทยเปลี่ยนไปอย่างมาก จากจำนวนรถที่เพิ่มขึ้นอย่างต่อเนื่อง
+                สู่ผลกระทบจากการระบาดใหญ่ และล่าสุดคือกระแสยานยนต์ไฟฟ้า (EV)
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                <div class="p-4 bg-blue-50 rounded-xl">
+                    <p class="text-sm text-gray-500 uppercase tracking-wide font-semibold">รถจดทะเบียนสะสม (2567)</p>
+                    <p class="text-4xl font-bold text-brand-primary mt-2">~45.5 ล้าน</p>
+                    <p class="text-xs text-gray-400 mt-1">จำนวนคัน</p>
+                </div>
+                <div class="p-4 bg-orange-50 rounded-xl">
+                    <p class="text-sm text-gray-500 uppercase tracking-wide font-semibold">การเติบโต EV (รายปี)</p>
+                    <p class="text-4xl font-bold text-brand-accent mt-2">+300%</p>
+                    <p class="text-xs text-gray-400 mt-1">ในช่วงปีพีค (2565-2567)</p>
+                </div>
+                <div class="p-4 bg-blue-50 rounded-xl">
+                    <p class="text-sm text-gray-500 uppercase tracking-wide font-semibold">เจ้าถนนตัวจริง</p>
+                    <p class="text-4xl font-bold text-brand-primary mt-2">72%</p>
+                    <p class="text-xs text-gray-400 mt-1">คือรถจักรยานยนต์</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW SECTION: TOTAL USAGE (10Y, 5Y, 3Y) -->
+        <section class="bg-gray-50 rounded-3xl p-6 border border-gray-200">
+            <div class="text-center mb-8">
+                <h3 class="text-3xl font-bold text-brand-primary">เจาะลึก: จำนวนรถบนท้องถนน (รวมทุกประเภท)</h3>
+                <p class="text-gray-600 mt-2">
+                    สถิติรวมยานพาหนะทุกประเภท (รถยนต์, จักรยานยนต์, EV, รถบรรทุก) ที่จดทะเบียนและใช้งานในระบบ
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 gap-12">
+                <!-- 10 Years Chart -->
+                <div class="bg-white rounded-2xl shadow-sm p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="text-xl font-bold text-gray-700">1. ภาพรวม 10 ปี (2558 - 2567)</h4>
+                        <span
+                            class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">ระยะยาว</span>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-4">แสดงแนวโน้มการเพิ่มขึ้นอย่างต่อเนื่องของปริมาณรถสะสมในระยะยาว
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="totalUsage10YearChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- 5 Years Chart -->
+                    <div class="bg-white rounded-2xl shadow-sm p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-lg font-bold text-gray-700">2. ภาพรวม 5 ปี (2563 - 2567)</h4>
+                            <span
+                                class="bg-orange-100 text-orange-800 text-xs font-semibold px-2.5 py-0.5 rounded">ช่วงโควิด-ฟื้นตัว</span>
+                        </div>
+                        <p class="text-sm text-gray-500 mb-4">เปรียบเทียบช่วงวิกฤตโรคระบาดและการกลับมาเติบโต</p>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="totalUsage5YearChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- 3 Years Chart -->
+                    <div class="bg-white rounded-2xl shadow-sm p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-lg font-bold text-gray-700">3. ภาพรวม 3 ปีล่าสุด (2565 - 2567)</h4>
+                            <span
+                                class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">ปัจจุบัน</span>
+                        </div>
+                        <p class="text-sm text-gray-500 mb-4">เน้นการเติบโตล่าสุดแบบรายปี (Year-on-Year)</p>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="totalUsage3YearChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Market Pulse (Bar Chart) -->
+        <section>
+            <div class="mb-6">
+                <h3 class="text-2xl font-bold text-brand-primary border-l-4 border-brand-accent pl-4">ชีพจรตลาด:
+                    ยอดจดทะเบียนใหม่รายปี</h3>
+                <p class="text-gray-600 mt-2 ml-5">
+                    ยอดจดทะเบียนใหม่รายปีสะท้อนภาวะเศรษฐกิจไทย (แยกจากยอดสะสมด้านบน)
+                </p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-md p-6">
+                <div class="chart-container" style="max-height: 450px;">
+                    <canvas id="newRegChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: The EV Revolution (Area Chart) -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div
+                class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl shadow-md p-8 text-white relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10">
+                    <span class="text-9xl font-bold">⚡</span>
+                </div>
+                <h3 class="text-3xl font-bold text-brand-accent mb-4">ปรากฏการณ์ EV</h3>
+                <p class="mb-6 text-gray-300 leading-relaxed">
+                    รถยนต์ไฟฟ้า (BEV) เติบโตแบบก้าวกระโดดด้วยมาตรการสนับสนุนจากภาครัฐ
+                </p>
+                <ul class="space-y-4 mb-8">
+                    <li class="flex items-center">
+                        <span
+                            class="bg-brand-accent text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">1</span>
+                        <span>2565: จุดเปลี่ยนสำคัญ (1.5 หมื่นคัน)</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span
+                            class="bg-brand-accent text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3">2</span>
+                        <span>2567: ก้าวข้าม 1 แสนคันต่อปี</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-center">
+                <h4 class="text-lg font-semibold text-gray-700 mb-4">ยอดจดทะเบียน BEV ใหม่ (Exponential Growth)</h4>
+                <div class="chart-container">
+                    <canvas id="evChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Composition & Safety (Grid) -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white rounded-2xl shadow-md p-6">
+                <h3 class="text-xl font-bold text-brand-primary mb-2">สัดส่วนประเภทรถ</h3>
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="typePieChart"></canvas>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-md p-6">
+                <h3 class="text-xl font-bold text-red-700 mb-2">สาเหตุอุบัติเหตุหลัก</h3>
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="accidentDonutChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Traffic Intensity (Line Chart) -->
+        <section class="bg-white rounded-2xl shadow-md p-8">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-6">
+                <div class="max-w-2xl">
+                    <h3 class="text-2xl font-bold text-brand-primary">ดัชนีความหนาแน่นจราจร (Traffic Index)</h3>
+                    <p class="text-gray-600 mt-2">
+                        ตัวชี้วัดความหนาแน่นบนทางด่วน เปรียบเทียบก่อนและหลังโควิด
+                    </p>
+                </div>
+            </div>
+            <div class="chart-container w-full">
+                <canvas id="trafficLineChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-500 py-8 border-t border-gray-200 mt-12">
+            <p>&copy; 2026 Canvas Infographics. ข้อมูลจากกรมการขนส่งทางบก</p>
+        </footer>
+
+    </main>
+
+    <!-- Chart Configuration Script -->
+    <script>
+        // --- UTILITY ---
+        function wrapLabel(str, maxChars = 16) {
+            if (str.length <= maxChars) return str;
+            const words = str.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + 1 + words[i].length <= maxChars) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        const commonTooltipConfig = {
+            callbacks: {
+                title: function (tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    return Array.isArray(label) ? label.join(' ') : label;
+                }
+            }
+        };
+
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { font: { family: 'Sarabun', size: 12 } } },
+                tooltip: commonTooltipConfig
+            }
+        };
+
+        // ==========================================
+        // NEW CHARTS: Total Usage (10Y, 5Y, 3Y)
+        // ==========================================
+
+        // Data for Total Vehicles (All Types Combined)
+        // Source approximation: DLT cumulative stats
+        const data10YearsLabels = ['2558', '2559', '2560', '2561', '2562', '2563', '2564', '2565', '2566', '2567'];
+        const data10YearsValues = [36.5, 37.3, 38.4, 39.5, 40.7, 41.5, 42.3, 43.1, 44.2, 45.5];
+
+        // 1. Chart 10 Years (Line)
+        const ctx10Y = document.getElementById('totalUsage10YearChart').getContext('2d');
+        new Chart(ctx10Y, {
+            type: 'line',
+            data: {
+                labels: data10YearsLabels,
+                datasets: [{
+                    label: 'รถจดทะเบียนสะสมรวมทุกประเภท (ล้านคัน)',
+                    data: data10YearsValues,
+                    borderColor: '#1E3A8A', // Brand Blue
+                    backgroundColor: 'rgba(30, 58, 138, 0.1)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#1E3A8A',
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    y: { min: 30, title: { display: true, text: 'ล้านคัน' } }
+                }
+            }
+        });
+
+        // 2. Chart 5 Years (Bar) - Focus on 2563-2567
+        const ctx5Y = document.getElementById('totalUsage5YearChart').getContext('2d');
+        new Chart(ctx5Y, {
+            type: 'bar',
+            data: {
+                labels: ['2563 (โควิด)', '2564 (ล็อกดาวน์)', '2565 (ฟื้นตัว)', '2566', '2567'],
+                datasets: [{
+                    label: 'จำนวนรถสะสม 5 ปีหลัง (ล้านคัน)',
+                    data: [41.5, 42.3, 43.1, 44.2, 45.5],
+                    backgroundColor: [
+                        '#9CA3AF', // Gray for Covid
+                        '#9CA3AF',
+                        '#F97316', // Orange for Recovery start
+                        '#1E3A8A', // Blue for Growth
+                        '#1E3A8A'
+                    ],
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    y: { min: 40 }
+                }
+            }
+        });
+
+        // 3. Chart 3 Years (Area/Line) - Focus on 2565-2567
+        const ctx3Y = document.getElementById('totalUsage3YearChart').getContext('2d');
+        new Chart(ctx3Y, {
+            type: 'line',
+            data: {
+                labels: ['2565', '2566', '2567'],
+                datasets: [{
+                    label: 'การเติบโต 3 ปีล่าสุด (ล้านคัน)',
+                    data: [43.1, 44.2, 45.5],
+                    borderColor: '#F97316', // Orange Accent
+                    backgroundColor: 'rgba(249, 115, 22, 0.2)',
+                    borderWidth: 4,
+                    pointBackgroundColor: '#F97316',
+                    pointRadius: 6,
+                    fill: true,
+                    tension: 0.1 // Straighter lines for short duration
+                }]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    y: { min: 42 }
+                }
+            }
+        });
+
+        // ==========================================
+        // EXISTING CHARTS
+        // ==========================================
+
+        const processedNewRegLabels = ['2558', '2559', '2560', '2561', '2562', '2563', '2564', '2565', '2566', '2567'].map(l => wrapLabel(l, 12));
+        const ctxNewReg = document.getElementById('newRegChart').getContext('2d');
+        new Chart(ctxNewReg, {
+            type: 'bar',
+            data: {
+                labels: processedNewRegLabels,
+                datasets: [{
+                    label: 'รถจดทะเบียนใหม่ (ล้านคัน)',
+                    data: [2.60, 2.70, 2.80, 2.90, 3.10, 2.65, 2.68, 2.97, 3.08, 2.60],
+                    backgroundColor: (ctx) => ctx.raw < 2.7 ? '#F97316' : '#1E3A8A',
+                    borderRadius: 4
+                }]
+            },
+            options: commonOptions
+        });
+
+        const ctxEV = document.getElementById('evChart').getContext('2d');
+        new Chart(ctxEV, {
+            type: 'line',
+            data: {
+                labels: ['2563', '2564', '2565', '2566', '2567', '2568'],
+                datasets: [{
+                    label: 'BEV ใหม่ (คัน)',
+                    data: [2000, 4000, 15000, 76000, 102000, 147000],
+                    borderColor: '#10B981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: commonOptions
+        });
+
+        const ctxType = document.getElementById('typePieChart').getContext('2d');
+        new Chart(ctxType, {
+            type: 'pie',
+            data: {
+                labels: ['มอเตอร์ไซค์', 'รถเก๋ง/กระบะ', 'รถบรรทุก/บัส', 'อื่นๆ'],
+                datasets: [{
+                    data: [72, 22, 4, 2],
+                    backgroundColor: ['#1E3A8A', '#3B82F6', '#F97316', '#9CA3AF'],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: { ...commonOptions, plugins: { legend: { position: 'right' } } }
+        });
+
+        const processedAccidentLabels = ['ขับรถเร็ว (39%)', 'ตัดหน้า (21%)', 'เมาแล้วขับ (20%)', 'อื่นๆ (20%)'].map(l => wrapLabel(l, 16));
+        const ctxAccident = document.getElementById('accidentDonutChart').getContext('2d');
+        new Chart(ctxAccident, {
+            type: 'doughnut',
+            data: {
+                labels: processedAccidentLabels,
+                datasets: [{
+                    data: [39, 21, 20, 20],
+                    backgroundColor: ['#EF4444', '#F59E0B', '#8B5CF6', '#E5E7EB'],
+                    borderWidth: 0
+                }]
+            },
+            options: { ...commonOptions, plugins: { legend: { position: 'right' }, tooltip: commonTooltipConfig }, cutout: '60%' }
+        });
+
+        const ctxTraffic = document.getElementById('trafficLineChart').getContext('2d');
+        new Chart(ctxTraffic, {
+            type: 'line',
+            data: {
+                labels: ['2560', '2561', '2562', '2563', '2564', '2565', '2566', '2567'],
+                datasets: [{
+                    label: 'ดัชนีจราจร (ฐาน 100)',
+                    data: [98, 100, 102, 85, 78, 92, 99, 101],
+                    borderColor: '#6366F1',
+                    borderDash: [5, 5],
+                    pointBackgroundColor: '#F97316'
+                }]
+            },
+            options: { ...commonOptions, scales: { y: { suggestedMin: 60, suggestedMax: 110 } } }
+        });
+
+    </script>
+</body>
+
+</html>
